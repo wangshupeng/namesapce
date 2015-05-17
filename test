@@ -1,0 +1,111 @@
+/**
+* 创建全局对象MYAPP
+* @module MYAPP
+* @title MYAPP Global
+*/
+var MYAPP = MYAPP || {};
+
+/**
+* 返回指定的命名空间，如果命名空间不存在则创建命名空间。
+* 备注：命名时需小心，注意保留关键字，可能在一些浏览器无法使用。
+*
+* @method namespace
+* @param {String *} 至少需要创建一个命名空间
+* @return {Object} 最后一个命名空间创建的对象的引用
+*/
+MYAPP.namespace = function(str){
+    var parts = str.split("."),
+    parent = MYAPP,
+    i=0,
+    l=0;
+
+    if(parts[0]==="MYAPP"){
+        parts = parts.slice(1);
+    }
+    for(i=0,l=parts.length; i<l;i++){
+        if(typeof parent[parts[i]] === "undefined"){
+            parent[parts[i]] = {};
+        }
+        parent = parent[parts[i]];
+    }
+    return parent;
+}
+
+/**
+* bfun是Basic Functions Extended的缩写
+* 作用：包括数组、字符串等等数功能扩展
+*
+* @module bfun
+*/
+MYAPP.bfun = {
+    array:(function(){
+        return {
+            /**
+            * @method isArray 判断是否为数组
+            * @param {Array} 数组
+            * @return {Boolean} 真返回true，否则返回false
+            */
+            isArray: function(){
+                return Object.prototype.toString.call(arguments[0])  === '[object Array]'; 
+            },
+            /**
+            * @method inArray 检查值是否在数组中
+            * @param {value，Array} 值，数组
+            * @return {Boolean} 真返回true，否则返回undefined
+            */
+            inArray: function(val,arr){
+                for(var i=0,l=arr.length;i<l;i++){
+                    if(arr[i] === val){
+                        return true;
+                    }
+                }
+            }
+        }
+    })(),
+    string:(function(){
+        return {
+            /**
+            * @method trim 过滤字符串两边多余的空格
+            * @param {String} 字符串
+            * @return {String} 字符串
+            */
+            trim: function(){
+                return arguments[0].replace(/(^\s*)|(\s*$)/g, "");
+            },
+            /**
+            * @method ltrim 过滤字符串左边多余的空格
+            * @param {String} 字符串
+            * @return {String} 字符串
+            */
+            ltrim: function(){
+                return arguments[0].replace(/^s+/g, "");
+            },
+            /**
+            * @method rtrim 过滤字符串右边多余的空格
+            * @param {String} 字符串
+            * @return {String} 字符串
+            */
+            rtrim: function(){
+                return arguments[0].replace(/s+$/g, "");
+            }
+        }
+    })()
+}
+
+// 测试
+MYAPP.test = {
+    init: function(){
+        // 使用对应的模块先引用
+        var marray = MYAPP.namespace("MYAPP.bfun.array");
+        var mstring = MYAPP.namespace("MYAPP.bfun.string");
+
+        var arr =  ["a","b"];
+        var str = "   abc  ";
+
+        console.log("判断是否为数组：" + marray.isArray(arr));
+        console.log("值是否在数组中：" + marray.inArray("a",arr));
+        console.log("过滤左右空格：" + mstring.trim(str));
+    }
+}
+
+MYAPP.test.init();
